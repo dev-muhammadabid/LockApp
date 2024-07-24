@@ -41,7 +41,7 @@
         android:textSize="30sp"
         android:text="@string/start_btn"
         android:background="@drawable/maincustom_button"
-        android:textColor="@color/off_white"
+        android:textColor="@color/grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
