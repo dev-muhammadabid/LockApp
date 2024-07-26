@@ -33,7 +33,7 @@
         android:id="@+id/app_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginTop="15dp"
         android:textOff="U"
         android:textOn="L"
         android:thumb="@drawable/thumbbtn"
