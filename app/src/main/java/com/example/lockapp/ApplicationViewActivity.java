@@ -1,12 +1,11 @@
 package com.example.lockapp;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
+import android.content.Intent;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,12 +44,16 @@ public class ApplicationViewActivity extends AppCompatActivity {
         List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
 
         for (PackageInfo packageInfo : packageInfos) {
-            String packageName = packageInfo.packageName;
-            String appName = packageInfo.applicationInfo.loadLabel(packageManager).toString();
-            Drawable appIcon = packageInfo.applicationInfo.loadIcon(packageManager);
+            // Check if the package has a launcher intent
+            Intent intent = packageManager.getLaunchIntentForPackage(packageInfo.packageName);
+            if (intent != null) {
+                String packageName = packageInfo.packageName;
+                String appName = packageInfo.applicationInfo.loadLabel(packageManager).toString();
+                Drawable appIcon = packageInfo.applicationInfo.loadIcon(packageManager);
 
-            AppItem appItem = new AppItem(appIcon, appName, packageName, "Unlocked");
-            appItemList.add(appItem);
+                AppItem appItem = new AppItem(appIcon, appName, packageName, "Unlocked");
+                appItemList.add(appItem);
+            }
         }
 
         adapter.notifyDataSetChanged();
