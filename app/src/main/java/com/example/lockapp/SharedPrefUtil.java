@@ -12,41 +12,41 @@ public class SharedPrefUtil {
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
 
-    public SharedPrefUtil(Context context){
+    public SharedPrefUtil(Context context) {
         this.pref = context.getSharedPreferences(SHARED_APP_PREF, Context.MODE_PRIVATE);
     }
 
-    public static SharedPrefUtil getInstance(Context context){
+    public static SharedPrefUtil getInstance(Context context) {
         return new SharedPrefUtil(context);
     }
 
-    public void putString(String key, String value){
+    public void putString(String key, String value) {
         editor = pref.edit();
         editor.putString(key, value);
         editor.apply();
     }
 
-    public String getString(String key){
+    public String getString(String key) {
         return pref.getString(key, "");
     }
 
-    public void putInteger(String key, int value){
+    public void putInteger(String key, int value) {
         editor = pref.edit();
         editor.putInt(key, value);
         editor.apply();
     }
 
-    public int getInteger(String key){
+    public int getInteger(String key) {
         return pref.getInt(key, 0);
     }
 
-    public void putBoolean(String key, boolean value){
+    public void putBoolean(String key, boolean value) {
         editor = pref.edit();
         editor.putBoolean(key, value);
         editor.apply();
     }
 
-    public boolean getBoolean(String key){
+    public boolean getBoolean(String key) {
         return pref.getBoolean(key, false);
     }
 
@@ -66,7 +66,10 @@ public class SharedPrefUtil {
         int size = pref.getInt(key + "_size", 0);
 
         for (int i = 0; i < size; i++) {
-            list.add(pref.getString(key + "_" + i, null));
+            String item = pref.getString(key + "_" + i, null);
+            if (item != null) {
+                list.add(item);
+            }
         }
 
         return list;

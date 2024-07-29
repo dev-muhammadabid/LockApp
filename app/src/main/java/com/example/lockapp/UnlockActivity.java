@@ -19,13 +19,9 @@ public class UnlockActivity extends Activity {
         try {
             ApplicationInfo appInfo = packageManager.getApplicationInfo(packageName, 0);
             if (appInfo != null) {
-                Intent launchIntent = packageManager.getLaunchIntentForPackage(packageName);
-                if (launchIntent != null) {
-//                    startActivity(launchIntent);
-                    Toast.makeText(this, "App unlocked: " + packageName, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Unable to unlock app: " + packageName, Toast.LENGTH_SHORT).show();
-                }
+                // Typically, you might not need to launch the app here.
+                // Removing or commenting out the launch logic.
+                Toast.makeText(this, "App unlocked: " + packageName, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "App not found: " + packageName, Toast.LENGTH_SHORT).show();
             }

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.content.Intent;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,6 +47,7 @@ public class ApplicationViewActivity extends AppCompatActivity {
         PackageManager packageManager = getPackageManager();
         List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
 
+        appItemList.clear();
         for (PackageInfo packageInfo : packageInfos) {
             Intent intent = packageManager.getLaunchIntentForPackage(packageInfo.packageName);
             if (intent != null) {

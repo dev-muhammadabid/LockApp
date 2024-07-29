@@ -37,10 +37,6 @@ public class LockActivity extends Activity {
             if (appInfo != null) {
                 Log.d("LockActivity", "App found: " + packageName);
                 showLockScreen();
-            } else {
-                Log.e("LockActivity", "App not found: " + packageName);
-                Toast.makeText(this, "App not found: " + packageName, Toast.LENGTH_SHORT).show();
-                finish();
             }
         } catch (PackageManager.NameNotFoundException e) {
             Log.e("LockActivity", "App not found exception: " + e.getMessage());
