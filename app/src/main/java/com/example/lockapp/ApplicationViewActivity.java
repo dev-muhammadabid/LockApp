@@ -1,12 +1,12 @@
 package com.example.lockapp;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.content.Intent;
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,13 +20,14 @@ public class ApplicationViewActivity extends AppCompatActivity {
     List<AppItem> appItemList = new ArrayList<>();
     ApplicationViewAdapter adapter;
     ProgressDialog progressDialog;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_application_view);
 
+        context = this;
         recyclerView = findViewById(R.id.app_list);
         adapter = new ApplicationViewAdapter(appItemList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -40,18 +41,22 @@ public class ApplicationViewActivity extends AppCompatActivity {
     }
 
     private void getInstalledApps() {
+        List<String> lockedAppsList = SharedPrefUtil.getInstance(context).getList("lockedApps");
+
         PackageManager packageManager = getPackageManager();
         List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
 
         for (PackageInfo packageInfo : packageInfos) {
-            // Check if the package has a launcher intent
             Intent intent = packageManager.getLaunchIntentForPackage(packageInfo.packageName);
             if (intent != null) {
                 String packageName = packageInfo.packageName;
                 String appName = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                 Drawable appIcon = packageInfo.applicationInfo.loadIcon(packageManager);
 
-                AppItem appItem = new AppItem(appIcon, appName, packageName, "Unlocked");
+                boolean isLocked = lockedAppsList.contains(packageName);
+                String status = isLocked ? "Locked" : "Unlocked";
+
+                AppItem appItem = new AppItem(appIcon, appName, packageName, status);
                 appItemList.add(appItem);
             }
         }
