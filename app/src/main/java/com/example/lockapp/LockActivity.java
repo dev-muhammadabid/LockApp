@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class LockActivity extends Activity {
 
     private static final int REQUEST_CODE_UNLOCK = 2;
@@ -16,17 +18,20 @@ public class LockActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_list_item);
+        setContentView(R.layout.app_list_item); // Ensure this layout is correct for LockActivity
 
         Intent intent = getIntent();
-        packageName = intent.getStringExtra("package_name");
+        if (intent != null) {
+            packageName = intent.getStringExtra("package_name");
+        }
 
-        if (packageName == null) {
+        if (packageName == null || packageName.isEmpty()) {
             Toast.makeText(this, "Package name is missing", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
+        Log.d("LockActivity", "Received package name: " + packageName);
         lockApp(packageName);
     }
 
@@ -50,9 +55,18 @@ public class LockActivity extends Activity {
     }
 
     private void showLockScreen() {
-        Intent intent = new Intent(this, LockScreenActivity.class);
-        intent.putExtra("package_name", packageName);
-        startActivityForResult(intent, REQUEST_CODE_UNLOCK);
+        List<String> lockedApps = SharedPrefUtil.getInstance(this).getList("lockedApps");
+        Log.d("LockActivity", "Locked apps list: " + lockedApps);
+
+        if (lockedApps != null && lockedApps.contains(packageName)) {
+            Log.d("LockActivity", "App is locked: " + packageName);
+            Intent intent = new Intent(this, LockScreenActivity.class);
+            intent.putExtra("package_name", packageName);
+            startActivityForResult(intent, REQUEST_CODE_UNLOCK);
+        } else {
+            Log.d("LockActivity", "App is not locked: " + packageName);
+            launchApp();
+        }
     }
 
     @Override
@@ -63,8 +77,8 @@ public class LockActivity extends Activity {
                 launchApp();
             } else {
                 Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                finish();
             }
-            finish();
         }
     }
 
@@ -72,9 +86,11 @@ public class LockActivity extends Activity {
         PackageManager packageManager = getPackageManager();
         Intent intent = packageManager.getLaunchIntentForPackage(packageName);
         if (intent != null) {
+            Log.d("LockActivity", "Launching app: " + packageName);
             startActivity(intent);
         } else {
             Toast.makeText(this, "Unable to launch app: " + packageName, Toast.LENGTH_SHORT).show();
         }
+        finish();
     }
 }

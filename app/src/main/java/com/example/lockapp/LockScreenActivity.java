@@ -17,7 +17,7 @@ public class LockScreenActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lock_screen); // Replace with your actual layout for LockScreenActivity
+        setContentView(R.layout.activity_lock_screen);
 
         authenticateUser();
     }
@@ -26,6 +26,7 @@ public class LockScreenActivity extends FragmentActivity {
         BiometricManager biometricManager = BiometricManager.from(this);
         int canAuthenticate = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG | BiometricManager.Authenticators.DEVICE_CREDENTIAL);
         Log.d("LockScreenActivity", "canAuthenticate result: " + canAuthenticate);
+
         if (canAuthenticate == BiometricManager.BIOMETRIC_SUCCESS) {
             Executor executor = ContextCompat.getMainExecutor(this);
             BiometricPrompt.AuthenticationCallback callback = new BiometricPrompt.AuthenticationCallback() {

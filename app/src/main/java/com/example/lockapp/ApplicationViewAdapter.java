@@ -1,7 +1,6 @@
 package com.example.lockapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationViewAdapter extends RecyclerView.Adapter<ApplicationViewAdapter.ViewHolder> {
@@ -44,13 +42,14 @@ public class ApplicationViewAdapter extends RecyclerView.Adapter<ApplicationView
         holder.appStatus.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 item.setStatus("Locked");
-                lockedApps.add(item.getPackageName());
-                SharedPrefUtil.getInstance(context).setList("lockedApps", lockedApps);
+                if (!lockedApps.contains(item.getPackageName())) {
+                    lockedApps.add(item.getPackageName());
+                }
             } else {
                 item.setStatus("Unlocked");
                 lockedApps.remove(item.getPackageName());
-                SharedPrefUtil.getInstance(context).setList("lockedApps", lockedApps);
             }
+            SharedPrefUtil.getInstance(context).setList("lockedApps", lockedApps);
         });
     }
 
