@@ -1,6 +1,5 @@
 package com.example.lockapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,7 +17,7 @@ public class LockScreenActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lock_screen);
+        setContentView(R.layout.activity_lock_screen); // Replace with your actual layout for LockScreenActivity
 
         authenticateUser();
     }
@@ -26,7 +25,7 @@ public class LockScreenActivity extends FragmentActivity {
     private void authenticateUser() {
         BiometricManager biometricManager = BiometricManager.from(this);
         int canAuthenticate = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG | BiometricManager.Authenticators.DEVICE_CREDENTIAL);
-
+        Log.d("LockScreenActivity", "canAuthenticate result: " + canAuthenticate);
         if (canAuthenticate == BiometricManager.BIOMETRIC_SUCCESS) {
             Executor executor = ContextCompat.getMainExecutor(this);
             BiometricPrompt.AuthenticationCallback callback = new BiometricPrompt.AuthenticationCallback() {
@@ -34,7 +33,6 @@ public class LockScreenActivity extends FragmentActivity {
                 public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
                     super.onAuthenticationError(errorCode, errString);
                     Log.e("LockScreenActivity", "Authentication error: " + errString);
-                    Toast.makeText(LockScreenActivity.this, "Authentication error: " + errString, Toast.LENGTH_SHORT).show();
                     setResult(RESULT_CANCELED);
                     finish();
                 }
@@ -43,7 +41,6 @@ public class LockScreenActivity extends FragmentActivity {
                 public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                     super.onAuthenticationSucceeded(result);
                     Log.d("LockScreenActivity", "Authentication succeeded");
-                    Toast.makeText(LockScreenActivity.this, "Authentication succeeded", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
                     finish();
                 }
@@ -60,13 +57,15 @@ public class LockScreenActivity extends FragmentActivity {
 
             BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
                     .setTitle("Biometric Authentication")
-                    .setSubtitle("Authenticate to access the app")
-                    .setNegativeButtonText("Cancel")
+                    .setSubtitle("Authenticate to unlock the app")
+                    .setDescription("Use your biometric credential to unlock this app.")
+                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG | BiometricManager.Authenticators.DEVICE_CREDENTIAL)
                     .build();
 
             biometricPrompt.authenticate(promptInfo);
         } else {
-            Toast.makeText(this, "Biometric authentication not available", Toast.LENGTH_SHORT).show();
+            Log.e("LockScreenActivity", "Biometric authentication not supported: " + canAuthenticate);
+            Toast.makeText(this, "Biometric authentication not supported", Toast.LENGTH_SHORT).show();
             setResult(RESULT_CANCELED);
             finish();
         }
